@@ -1,3 +1,15 @@
 package main
 
-// Пишите тесты в этом файле
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+
+func TestGenerateRandomElements(t *testing.T) {
+	tests := []int{2, 100, 0}
+	for _, i := range tests {
+		assert.Len(t, generateRandomElements(i), i)
+	}
+}

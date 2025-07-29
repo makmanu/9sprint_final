@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
+	//"math/rand"
 )
 
 const (
-	SIZE   = 100_000_0
+	SIZE   = 100_000_000
 	CHUNKS = 8
 )
 
@@ -14,10 +14,10 @@ const (
 func generateRandomElements(size int) []int {
 	list := make([]int, size)
 	if size < 1 {
-		return list
+		return []int {}
 	}
 	for range size {
-		list = append(list, rand.Intn(size))
+		list = append(list, 1334)
 	}
 	return list
 }
