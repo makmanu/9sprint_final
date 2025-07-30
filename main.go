@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	//"math/rand"
+	"math/rand"
 )
 
 const (
@@ -12,12 +12,12 @@ const (
 
 // generateRandomElements generates random elements.
 func generateRandomElements(size int) []int {
-	list := make([]int, size)
+	list := make([]int, 0, size)
 	if size < 1 {
 		return []int {}
 	}
 	for range size {
-		list = append(list, 1334)
+		list = append(list, rand.Intn(size))
 	}
 	return list
 }
