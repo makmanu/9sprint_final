@@ -2,13 +2,22 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
+	"sync"
 )
 
 const (
 	SIZE   = 100_000_000
 	CHUNKS = 8
 )
+
+var wg sync.WaitGroup
+
+type results struct{
+	mu sync.Mutex
+	resultsArray []int
+}
 
 // generateRandomElements generates random elements.
 func generateRandomElements(size int) []int {
@@ -38,8 +47,27 @@ func maximum(data []int) int {
 
 // maxChunks returns the maximum number of elements in a chunks.
 func maxChunks(data []int) int {
-	// ваш код здесь
-	return 0
+	var resultMaxChunks results
+	if len(data) < CHUNKS^CHUNKS {
+		return maximum(data)
+	}
+	sizeOfChunk := int(math.Ceil(float64(len(data)) / float64(CHUNKS)))
+	for i := 1; i <= CHUNKS; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			if i == CHUNKS {
+				chunk := data[(i - 1) * sizeOfChunk:]
+			} else {
+				chunk := data[(i - 1) * sizeOfChunk:i * sizeOfChunk - 1]
+			}
+			max := maximum(chunk)
+			resultMaxChunks.mu.Lock()
+			resultMaxChunks.resultsArray = append(resultMaxChunks.resultsArray, max)
+			resultMaxChunks.mu.Unlock()
+			return
+		}(i)
+	}
 }
 
 func main() {
