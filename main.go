@@ -24,8 +24,16 @@ func generateRandomElements(size int) []int {
 
 // maximum returns the maximum number of elements.
 func maximum(data []int) int {
-	// ваш код здесь
-	return 0
+	if len(data) < 1 {
+		return 0
+	}
+	max := 0
+	for _, v := range data {
+		if v > max {
+			max = v
+		}
+	}
+	return max
 }
 
 // maxChunks returns the maximum number of elements in a chunks.
