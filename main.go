@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/rand"
 	"sync"
+	"time"
 )
 
 const (
@@ -21,12 +22,13 @@ type results struct{
 
 // generateRandomElements generates random elements.
 func generateRandomElements(size int) []int {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	list := make([]int, 0, size)
 	if size < 1 {
 		return []int {}
 	}
 	for range size {
-		list = append(list, rand.Intn(size))
+		list = append(list, r.Intn(size))
 	}
 	return list
 }
@@ -47,40 +49,39 @@ func maximum(data []int) int {
 
 // maxChunks returns the maximum number of elements in a chunks.
 func maxChunks(data []int) int {
-	var resultMaxChunks results
-	if len(data) < CHUNKS^CHUNKS {
+	if len(data) < CHUNKS {
 		return maximum(data)
 	}
+	var resultMaxChunks results
 	sizeOfChunk := int(math.Ceil(float64(len(data)) / float64(CHUNKS)))
-	for i := 1; i <= CHUNKS; i++ {
+	for i := 0; i < CHUNKS; i++ {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
-			if i == CHUNKS {
-				chunk := data[(i - 1) * sizeOfChunk:]
-			} else {
-				chunk := data[(i - 1) * sizeOfChunk:i * sizeOfChunk - 1]
-			}
+			chunk := data[i * sizeOfChunk:(i + 1) * sizeOfChunk]
 			max := maximum(chunk)
 			resultMaxChunks.mu.Lock()
 			resultMaxChunks.resultsArray = append(resultMaxChunks.resultsArray, max)
 			resultMaxChunks.mu.Unlock()
-			return
 		}(i)
 	}
+	wg.Wait()
+	return maximum(resultMaxChunks.resultsArray)
 }
 
 func main() {
 	fmt.Printf("Генерируем %d целых чисел", SIZE)
-	// ваш код здесь
+	randomIntSlice := generateRandomElements(SIZE)
 
 	fmt.Println("Ищем максимальное значение в один поток")
-	// ваш код здесь
 
-	//fmt.Printf("Максимальное значение элемента: %d\nВремя поиска: %d ms\n", max, elapsed)
+	t := time.Now()
+
+	fmt.Printf("Максимальное значение элемента: %d\nВремя поиска: %d ms\n", maximum(randomIntSlice), time.Since(t).Milliseconds())
 
 	fmt.Printf("Ищем максимальное значение в %d потоков", CHUNKS)
-	// ваш код здесь
+	
+	t = time.Now()
 
-	//fmt.Printf("Максимальное значение элемента: %d\nВремя поиска: %d ms\n", max, elapsed)
+	fmt.Printf("Максимальное значение элемента: %d\nВремя поиска: %d ms\n", maxChunks(randomIntSlice), time.Since(t).Milliseconds())
 }
