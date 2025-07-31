@@ -79,7 +79,7 @@ func main() {
 
 	fmt.Printf("Максимальное значение элемента: %d\nВремя поиска: %d ms\n", maximum(randomIntSlice), time.Since(t).Milliseconds())
 
-	fmt.Printf("Ищем максимальное значение в %d потоков", CHUNKS)
+	fmt.Printf("Ищем максимальное значение в %d потоков\n", CHUNKS)
 	
 	t = time.Now()
 
