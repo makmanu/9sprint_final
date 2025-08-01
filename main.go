@@ -16,13 +16,12 @@ var wg sync.WaitGroup
 
 // generateRandomElements generates random elements.
 func generateRandomElements(size int) []int {
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	list := make([]int, 0, size)
 	if size < 1 {
 		return []int {}
 	}
 	for range size {
-		list = append(list, r.Intn(size))
+		list = append(list, rand.Int())
 	}
 	return list
 }
