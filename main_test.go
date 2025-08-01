@@ -8,9 +8,13 @@ import (
 
 
 func TestGenerateRandomElements(t *testing.T) {
-	tests := []int{2, 100, 0, 232423}
-	for _, i := range tests {
+	testsPositive := []int{2, 100, 0, 232423}
+	testsNegative := []int{-2354, -934578, -0}
+	for _, i := range testsPositive {
 		assert.Len(t, generateRandomElements(i), i)
+	}
+	for _, i := range testsNegative {
+		assert.Len(t, generateRandomElements(i), 0)
 	}
 }
 
