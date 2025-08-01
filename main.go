@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"math/rand"
 	"sync"
 	"time"
@@ -48,12 +47,17 @@ func maxChunks(data []int) int {
 		return maximum(data)
 	}
 	resultArray := make([]int, CHUNKS)
-	sizeOfChunk := int(math.Ceil(float64(len(data)) / float64(CHUNKS)))
-	for i := 0; i < CHUNKS; i++ {
+	sizeOfChunk := len(data) / CHUNKS
+	for i := range CHUNKS {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
-			chunk := data[i * sizeOfChunk:(i + 1) * sizeOfChunk]
+			var chunk []int
+			if i != CHUNKS - 1 {
+				chunk = data[i * sizeOfChunk:(i + 1) * sizeOfChunk]
+			} else {
+				chunk = data[i * sizeOfChunk:]
+			}
 			max := maximum(chunk)
 			resultArray[i] = max
 		}(i)
