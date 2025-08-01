@@ -15,11 +15,6 @@ const (
 
 var wg sync.WaitGroup
 
-type results struct{
-	mu sync.Mutex
-	resultsArray []int
-}
-
 // generateRandomElements generates random elements.
 func generateRandomElements(size int) []int {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -52,7 +47,7 @@ func maxChunks(data []int) int {
 	if len(data) < CHUNKS {
 		return maximum(data)
 	}
-	var resultMaxChunks results
+	resultArray := make([]int, CHUNKS)
 	sizeOfChunk := int(math.Ceil(float64(len(data)) / float64(CHUNKS)))
 	for i := 0; i < CHUNKS; i++ {
 		wg.Add(1)
@@ -60,13 +55,11 @@ func maxChunks(data []int) int {
 			defer wg.Done()
 			chunk := data[i * sizeOfChunk:(i + 1) * sizeOfChunk]
 			max := maximum(chunk)
-			resultMaxChunks.mu.Lock()
-			resultMaxChunks.resultsArray = append(resultMaxChunks.resultsArray, max)
-			resultMaxChunks.mu.Unlock()
+			resultArray[i] = max
 		}(i)
 	}
 	wg.Wait()
-	return maximum(resultMaxChunks.resultsArray)
+	return maximum(resultArray)
 }
 
 func main() {
